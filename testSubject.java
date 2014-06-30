@@ -6,6 +6,8 @@ package timeprefapp;
 
 /**
  * Contains the Main function to interact with subject
+ * Takes as input the subject ID and max num of Rounds
+ * Output: subject responses and model posteriors.
  */
 public class testSubject {
     
@@ -40,13 +42,15 @@ public class testSubject {
         catch (Exception e) { System.err.println("Error Opening File"); }
         
         // Initialize Design object
+        // Creates all possible designs in design space
         DesignFunctions TP_Designs = new DesignFunctions();
         TP_Designs.makeAllDesigns();
         
         // specify number of models
         int numM = 5;
         
-        // specify noise model
+        // specify noise model:
+        // Requires noise level and max number of Errors before hypothesis is eliminated
         int numN = 4;
         double [] noiseProb = { 0.0, 0.05, 0.10, 0.30 };
         int [] maxErr = { 0, 4, 7, 15 };
@@ -55,12 +59,15 @@ public class testSubject {
         int gridSize = 11;
         
         // initialize likelihood objects and grid
+        // For each dimension, specify range: min and max values of parameter
         double [] Exp_minR = {0.0, 0}, Exp_maxR = {0.02, 0};
         double [] Hyp_minR = {0.0, 0}, Hyp_maxR = {0.2, 0};
         double [] QH_minR = {0.0, 0.5}, QH_maxR = {0.02, 1.0};
         double [] Fix_minR = {0.0, 0.0}, Fix_maxR = {0.02, 20.0};
         double [] GH_minR = {0.02, 0.5}, GH_maxR = {0.22, 1.0};
         
+        // Initialize Likelihood objects:
+        // specify Likelihood model id, and parameter specifications.
         Likelihood LikExp = new Likelihood(0, gridSize, Exp_minR, Exp_maxR);
         Likelihood LikHyp = new Likelihood(1, gridSize, Hyp_minR, Hyp_maxR);
         Likelihood LikQH = new Likelihood(2, gridSize, QH_minR, QH_maxR);
@@ -68,6 +75,9 @@ public class testSubject {
         Likelihood LikGH = new Likelihood(4, gridSize, GH_minR, GH_maxR);
         
         // initially all (H, Theta) are valid
+        // numHT is the number of hypotheses for each model.
+        // for e.g. exponential has 1 parameter, so number of hypotheses
+        // is equal to grid size
         int [] numHT = new int[numM];
         numHT[0] = LikExp.gridSize;
         numHT[1] = LikHyp.gridSize;
@@ -75,18 +85,24 @@ public class testSubject {
         numHT[3] = LikFix.gridSize * LikFix.gridSize;
         numHT[4] = LikGH.gridSize * LikGH.gridSize;
         
+        // numH is all the hypotheses (across all models)
         int numH = 0;
         for (int m=0; m<numM; m++) { numH += numHT[m]; }
         
-        // initialize EC2
+        // initialize EC2:
+        // no of models, no of noise models, no of hypotheses, no of designs
         EC2 testEC = new EC2(numM, numN, numH, TP_Designs.num_Designs);
         
+        // Specify EC2 object parameters:
+        // All designs in lottery 0 and lottery 1, max error rates and noise prob.
         testEC.AllDesigns0 = TP_Designs.Design0;
         testEC.AllDesigns1 = TP_Designs.Design1;
         
         testEC.maxErr = maxErr;
         testEC.noiseProb = noiseProb;
         
+        // IMPORTANT: Prior probability for each model
+        // here we assume each model is equally likely
         for (int m=0; m<numM; m++) { testEC.probModel[m] = 1.0 / numM; }
         
         // initialize parameters and create grid
@@ -98,7 +114,10 @@ public class testSubject {
             LikGH.Params[i] = LikGH.MinR[i];
         }
         
-        // initialize weights
+        // initialize weights WtHT
+        // IMPORTANT - Prior: Each hypotheses within a model has equal probability
+        // WtHT is the weight (evidence) for a specific hypothesis for each test
+        // Makes sense to output or store WtHT after every round for diagnosis.
         int ind;
         for (int n=0; n<testEC.numN; n++) {
             ind = 0;
@@ -123,6 +142,7 @@ public class testSubject {
             
             try {out.write(numRound + "\n");} catch(Exception e) {}
             
+            // testEC.designEC2 returns the best test (design) given likelihood objects
             UsedD[numRound] = testEC.designEC2(LikExp, LikHyp, LikQH, LikFix, 
                             LikGH, UsedD, numRound);
             
@@ -131,7 +151,9 @@ public class testSubject {
             Lottery0 = testEC.best_Design[0];
             Lottery1 = testEC.best_Design[1];
             
-            
+            // Following is a rudimentary UI for testing
+            // This should be replaced by a UI of choice - the only parts that are 
+            // important are recording the subject responses and passing them to the program
             // Clear the screen (PITA in JAVA)
             try {
                 if ((System.getProperty( "os.name")).startsWith(" Window ")) {
