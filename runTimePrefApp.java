@@ -1,12 +1,16 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
  */
 package timeprefapp;
 
 /**
  *
  * @author debray
+ * runTimePrefApp.java is the run-time application for BROAD
+ * In this package this is specific to the Time Preference Application
+ * Once the Java package is compiled, this program is run as an App.
+ * 
+ * Specifically, initialize with the Subject Id and Max Rounds
+ * and call testSubject program
  */
 public class runTimePrefApp {
 
