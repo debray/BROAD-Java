@@ -1,6 +1,9 @@
 /*
  *  Author: Debajyoti Ray, October 2011.
  *  Copyright: Caltech
+ *
+ *  This is the main class that implements the 
+ *  Equivalent Class Edge Cutting (EC^2) objective function
  */
 package timeprefapp;
 
@@ -69,10 +72,11 @@ public class EC2 {
         // assign scores to designs
         for (int d=0; d<num_Designs; d++) {
             
-            // create ResponseHT (table of MLE responses)
+            // create ResponseHT - table of MLE responses:
+            // what does each hypotheses choose for each design (test)
             ResponseHT = tableHT(likExp, likHyp, likQH, likFix, likGH, d, numHT);
             
-            // score this design
+            // score of this particular design
             Score = scoreEC2(ResponseHT, numHT);
             //System.err.println("Design: " + d + ", Score: " + Score);
             
@@ -98,6 +102,8 @@ public class EC2 {
         return bestD;
     }
     
+    // What (binary) choice does each hypothesis with each model select
+    // for a given design (test) d:
     public int[] tableHT (Likelihood likExp, Likelihood likHyp,
             Likelihood likQH, Likelihood likFix, Likelihood likGH,
             int d, int [] numHT) {
@@ -147,6 +153,7 @@ public class EC2 {
     }
     
     // Compute score of design d from samples
+    // The main computations for the EC^2 objective function
     public double scoreEC2 (int [] ResponseHT, int [] numHT) {
         
         int numH = 0;
@@ -274,6 +281,9 @@ public class EC2 {
             X_HT[ind]=tempGH.Response[th]; ind++; }
         
         // Reweight (H, Theta) based on observation
+        // If noise prob = 0 then each hypothesis is eliminated 
+        // if not consistent with test outcome. But for noisy responses,
+        // the weight WtHT is multiplied by the noise probablity
         for (int h=0; h<numH; h++) {
             
             if (X_HT[h] != Xobs) {
@@ -299,6 +309,8 @@ public class EC2 {
     }
     
     // Update the model posterior
+    // Note: in addition to the Model posterior, one should output the
+    // hypotheses-test weights (WtHT) after each test for diagnosis.
     public void updateModelPost(int [] numHT) {
         
         double [] MassH = new double[numM];
@@ -311,6 +323,8 @@ public class EC2 {
             for (int n=0; n<numHT[m]; n++) {
                 for (int p=0; p<numN; p++) {
                     
+                    // The probability mass over a hypothesis is the sum
+                    // of the weights over all the noise models.
                     MassH[m] += WtHT[ind][p];
                 }
                 ind++;
