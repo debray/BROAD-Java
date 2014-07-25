@@ -5,7 +5,14 @@
 package timeprefapp;
 
 /**
- * Definition for Likelihood class
+ * Definition for Likelihood class:
+ * Basic class definition is generic over any class of models.
+ * Use the utility models to convert to choice probabilities for different designs
+ * Given a utility model, the choice from the design, compute the softmax probability
+ * of choosing one option over another. This needs to be modified to enumerate over 
+ * all model specifications. 
+ * The MLE response function produces responses for all parameter values over a grid 
+ * for a particular theory. Needs to be modified for class of models (number of parameters)
  */
 public class Likelihood {
     
@@ -24,7 +31,7 @@ public class Likelihood {
     
     int [] Response;
     
-    // constructor
+    // constructor: initiate default values
     Likelihood(int m, int gS, double [] minR, double [] maxR) {
         
         model = m;
@@ -40,7 +47,8 @@ public class Likelihood {
     }
     
     
-    
+    // Given a utility model, and the two choices, compute the
+    // observation probability using a softmax function.
     double probObs() {
         
         double U1 = 0.0, U2 = 0.0, probObs;
@@ -92,6 +100,8 @@ public class Likelihood {
         return probObs;
     }
     
+    // Output the Maximum likelihood response for each parameter (hypothesis)
+    // value in the theory (model)
     int MLEresponse() {
         
         double inc0 = 0.0, inc1 = 0.0;
