@@ -219,7 +219,15 @@ public class testSubject {
             testEC.updateHT(LikExp, LikHyp, LikQH, LikFix, LikGH, 
                             UsedD[numRound], ynow);
             
+            // The key variable of interest is the WtHT matrix,
+            // which is a public variable of the testEC object.
+            // Output the testEC.WtHT file to disk by calling a public function
+            String outputWt = "";
+            
+            testEC.outputWeights(outputWt);
             // calculate model posteriors from valid (H, Theta)
+            // The model posteriors are just computed by "compressing", i.e.
+            // summing over all hypothesis of WtHT variable.
             testEC.updateModelPost(numHT);
             
             // File Output
