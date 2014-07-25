@@ -339,6 +339,23 @@ public class EC2 {
         }
     }
     
+    // output the current WtHT variable to a specified file whenever the function is called.
+    // this is necessary for future detailed analysis and diagnostics
+    public void outputWeight(String outfile) {
+      java.io.BufferedWriter out = null;
+        try {
+            out = new java.io.BufferedWriter(new java.io.FileWriter(outfile));
+        }
+        catch (Exception e) { System.err.println("Error Opening File"); }
+        
+        // write matrix line by line to file
+        try {
+            out.write(WtHT[] + "," + WtHT[] + "," + WtHT[] + "," + WtHT[]);
+            out.newLine();
+        }
+        catch (Exception e) { System.err.println("Error writing to file"); }
+    }
+    
     // choose a design at random
     public int randomDesign(int [] UsedD, int numR) {
         
