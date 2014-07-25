@@ -222,7 +222,7 @@ public class testSubject {
             // The key variable of interest is the WtHT matrix,
             // which is a public variable of the testEC object.
             // Output the testEC.WtHT file to disk by calling a public function
-            String outputWt = "";
+            String outputWt = "Results/Weights-" + id + "round" + numRound + ".txt";
             
             testEC.outputWeights(outputWt);
             // calculate model posteriors from valid (H, Theta)
