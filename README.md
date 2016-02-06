@@ -17,8 +17,14 @@ In another instance, the code requests user input after offering choices between
 
 # How to Run the Code:
 - Ensure that JAVA is installed on your computer: https://www.java.com/en/download/
-- Compile the code to generate .JAR files
+- Download the code (gitpull) to local folder, e.g. ~/BroadRisky/
+- Compile the code to generate .JAR files:
+    javac runTimePrefApp.java
+
+Note: Part of the configuration process for setting up the Java platform is setting the class path. The class path can be set using either the -classpath option with the javac compiler command and java interpreter command, or by setting the CLASSPATH environment variable. You need to set the class path to point to the directory where the EC2 class is so the compiler and interpreter commands can find it.
+
 - Run the .JAR file from the command line.
+    java runTimePrefApp
 
 # Understanding the code
 This section provides a high-level understand of the functions and their dependencies.
