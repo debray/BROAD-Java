@@ -21,6 +21,5 @@ In another instance, the code requests user input after offering choices between
 - Run the .JAR file from the command line.
 
 # Understanding the code
-Add pseudocode and functional dependencies.
+This section provides a high-level understand of the functions and their dependencies.
 
-Include dependencies of EC2.
