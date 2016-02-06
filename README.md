@@ -44,6 +44,35 @@ Note: make sure there is a newline\carriage return after the first line.
     
 > ~/BroadRisky/java -jar runTimePrefApp.jar
 
+Once the executable file has been created, the program can be run on different computers with the .jar file. 
+
 # Understanding the code
 This section provides a high-level understand of the functions and their dependencies.
 
+- runTimePrefApp.java contains the main function. The max number of rounds is set here with the maxRounds (=50) variable.
+- testSubject.java contains:
+    variable strPath to specify where results are stored.
+
+    variable numM specifies number of models.
+    
+    variable numN specifies the number of noise levels.
+    
+    array noiseProb specifies the noise levels ({ 0.0, 0.05, 0.10, 0.30 }). 
+    
+    array maxErr specifies maximum allowable errors from model ({ 0, 4, 7, 15 }). 
+    
+    variable gridSize specifies the gridSize (=11) per parameter.
+    
+    The function testThisSubject() instantiates the likelihood objects for the models, parameter ranges, and testEC object.
+    DesignFunctions() is also instantiated in this function.
+    
+- Likelihood.java integrates the posterior probabilities over model parameters to generate a likelihood for each model.
+
+- EC2.java calculates the EC^2 objective function given the posterior probabilities over models and parameters and the space of all possible designs. Also includes the function updateHT() to update parameter posterior probabilities based on user responses.
+
+- DesignFunctions.java generates the space of all designs and stores them into 2 multidimensional arrays: Design0 and Design1.
+
+    The variables Xlo and T specifies the monetary amounts and time delay in the Temporal choice experiment.
+
+- utility.java contains specifications of different utility models being compared.
+    
